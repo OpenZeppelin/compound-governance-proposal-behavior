@@ -18,6 +18,10 @@ The behavior was tested and divided into different situations:
 
 ## How to run it
 
+0. [Install foundry](https://github.com/foundry-rs/foundry#installation):
+
+`curl -L https://foundry.paradigm.xyz | bash`
+
 1. Clone the repository
 
 `git clone git@github.com:OpenZeppelin/XXX.git`
