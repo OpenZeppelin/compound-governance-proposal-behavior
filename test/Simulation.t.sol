@@ -12,20 +12,20 @@ import "../src/IComp.sol";
 // @dev These tests were developed for block 16984765 (add with `--fork-block-number 16984765`)
 contract SimulationTest is Helpers {
     // Constants
-    uint256 constant proposalTH = 25000000000000000000000; // 25.000 COMP
+    uint256 constant proposalTH = 25000000000000000000000; // 25,000 COMP
     // Contracts
     IGovernorBravo governorBravo = IGovernorBravo(0xc0Da02939E1441F497fd74F78cE7Decb17B66529);
     Timelock timelock = Timelock(payable(0x6d903f6003cca6255D85CcA4D3B5E5146dC33925));
     IComp comp = IComp(0xc00e94Cb662C3520282E6f5717214004A7f26888);
 
     // Hodlers
-    address public Fund = address(0xfA9b5f7fDc8AB34AAf3099889475d47febF830D7); // 305k
-    address public Genesis = address(0x0548F59fEE79f8832C299e01dCA5c76F034F558e); // 125k
-    address public Binance = address(0xF977814e90dA44bFA03b6295A0616a897441aceC); // 456k
+    address public Fund = address(0xfA9b5f7fDc8AB34AAf3099889475d47febF830D7); // ≈305,000 COMP
+    address public Genesis = address(0x0548F59fEE79f8832C299e01dCA5c76F034F558e); // ≈125,000 COMP
+    address public Binance = address(0xF977814e90dA44bFA03b6295A0616a897441aceC); // ≈456,000 COMP
 
     // Attacker (random address without any funds)
-    address public attacker = address(0x100e15c05f2ae4FdA47057b323ebEc7AD42FcD2D); // 0
-    address public Benefactor = address(0xc3d688B66703497DAA19211EEdff47f25384cdc3); // 748k
+    address public attacker = address(0x100e15c05f2ae4FdA47057b323ebEc7AD42FcD2D); // 0 COMP
+    address public Benefactor = address(0xc3d688B66703497DAA19211EEdff47f25384cdc3); // ≈748,000 COMP
 
     function setUp() public {
         checkAttackerIsNotPendingAdmin();
@@ -163,7 +163,7 @@ contract SimulationTest is Helpers {
         // We increment the time based on the voting period
         increaseBlockNumber(governorBravo.votingPeriod() + 1);
 
-        // Try to queue the proposal without any other vote but cannot reach the 400k limit
+        // Try to queue the proposal without any other vote but cannot reach the 400,000 COMP limit
         vm.expectRevert("GovernorBravo::queue: proposal can only be queued if it is succeeded");
         governorBravo.queue(proposalID);
 
@@ -178,7 +178,7 @@ contract SimulationTest is Helpers {
     }
 
     function testReaching400kRejectedProposal() public {
-        // Attacker gets 400k (4% of totalSupply) to have enough to
+        // Attacker gets 400,000 COMP (4% of totalSupply) to have enough to
         // pass the proposal when no one votes against
         giveCompToAttackerAndDelegate(comp.totalSupply() * 4 / 100);
         
@@ -211,7 +211,7 @@ contract SimulationTest is Helpers {
     }
 
     function test400kAttackerWithHelp() public {
-        // Attacker gets 400k (4% of totalSupply) to have enough to
+        // Attacker gets 400,000 COMP (4% of totalSupply) to have enough to
         // pass the proposal when no one votes against
         giveCompToAttackerAndDelegate(comp.totalSupply() * 4 / 100);
         
@@ -258,7 +258,7 @@ contract SimulationTest is Helpers {
     // This is the analogous test to the one provided
     // by the disclosed bug
     function testReaching400kPassedProposal() public {
-        // Attacker gets 400k (4% of totalSupply) to have enough to
+        // Attacker gets 400,000 COMP (4% of totalSupply) to have enough to
         // pass the proposal when no one votes against
         giveCompToAttackerAndDelegate(comp.totalSupply() * 4 / 100);
         
