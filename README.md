@@ -22,6 +22,10 @@ The behavior was tested and divided into different situations:
 
 `curl -L https://foundry.paradigm.xyz | bash`
 
+Reload your path or open a new terminal, and install the modules with:
+
+`foundryup`
+
 1. Clone the repository
 
 `git clone git@github.com:OpenZeppelin/XXX.git`
