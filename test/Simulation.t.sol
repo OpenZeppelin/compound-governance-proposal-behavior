@@ -13,7 +13,8 @@ import "../src/IComp.sol";
 contract SimulationTest is Helpers {
     // Constants
     uint256 constant proposalTH = 25000000000000000000000; // 25,000 COMP
-    uint256 constant paymentAmount = 
+    uint256 constant paymentAmount = 29455081001472800000000 // 1 Million in COMP based on 7-day 35.95 MA
+    
     // Contracts
     IGovernorBravo governorBravo = IGovernorBravo(0xc0Da02939E1441F497fd74F78cE7Decb17B66529);
     Timelock timelock = Timelock(payable(0x6d903f6003cca6255D85CcA4D3B5E5146dC33925));
@@ -83,10 +84,18 @@ contract SimulationTest is Helpers {
 
         // Calldatas
         bytes[] memory calldatas = new bytes[](1);
-        calldatas[0] = abi.encode(Multisig, );
+        calldatas[0] = abi.encode(Multisig, paymentAmount);
 
         // Description
-        string memory description = "Proposal to renable DSR";
+        string memory description = "# OpenZeppelin Security Partnership - 2023 Q3 Compensation ## Background Starting on Dec 21st \n"
+      "2021 \n"
+      OpenZeppelin was [selected](https://compound.finance/governance/proposals/76) to offer the Compound DAO security services including continuous audit
+      security advisory
+      and monitoring. At the start of every quarter
+      OpenZeppelin creates a proposal to perform the next service fee payment. ## Compensation Structure We receive our quarterly payments in a lump-sum of COMP. Based on the last week's average price
+      this would be $42.34 per COMP for a total quarterly payment of 23
+      617 COMP equaling $1M per the original agreement. This COMP will be transferred from the Timelock's existing balance. More detail in this [forum post](https://www.comp.xyz/t/openzeppelin-security-updates-for-q1-2023-q2-compensation-proposal/4163). By approving this proposal
+      you agree that any services provided by OpenZeppelin shall be governed by the [Terms of Service available here](https://docs.google.com/document/d/1eDcvirf0bdzpjIkfxQHm7fcV05O1IcLXL-Dl-U52Y4k/edit?usp=sharing)";
 
         // We submit the proposal as the attacker
         vm.prank(attacker);
