@@ -9,10 +9,11 @@ import "../src/IGovernorBravo.sol";
 import "../src/Timelock.sol";
 import "../src/IComp.sol";
 
-// @dev These tests were developed for block 16984765 (add with `--fork-block-number 16984765`)
+// @dev These tests were developed for block 17535430 (add with `--fork-block-number 17535430`)
 contract SimulationTest is Helpers {
     // Constants
     uint256 constant proposalTH = 25000000000000000000000; // 25,000 COMP
+    uint256 constant paymentAmount = 
     // Contracts
     IGovernorBravo governorBravo = IGovernorBravo(0xc0Da02939E1441F497fd74F78cE7Decb17B66529);
     Timelock timelock = Timelock(payable(0x6d903f6003cca6255D85CcA4D3B5E5146dC33925));
@@ -24,8 +25,9 @@ contract SimulationTest is Helpers {
     address public Binance = address(0xF977814e90dA44bFA03b6295A0616a897441aceC); // ≈456,000 COMP
 
     // Attacker (random address without any funds)
-    address public attacker = address(0x100e15c05f2ae4FdA47057b323ebEc7AD42FcD2D); // 0 COMP
+    address public OzProposer = address(0xeC405bcD169633C0D8EDc8ef869E164e42b9ec1E); // 100 COMP
     address public Benefactor = address(0xc3d688B66703497DAA19211EEdff47f25384cdc3); // ≈748,000 COMP
+    address public Multisig = address(0x57C970568668087c05352456a3F59B58B0330066); // 0 COMP
 
     function setUp() public {
         checkAttackerIsNotPendingAdmin();
@@ -34,11 +36,9 @@ contract SimulationTest is Helpers {
     }
 
     function checkAttackerIsNotPendingAdmin() internal {
-        // Checks if the attacker is already the `pendingAdmin`
-        assertEq(timelock.pendingAdmin() != attacker, true);
+        // Checks if the proposer is whitelisted
+        assertEq(governorBravo.isWhitelisted(OzProposer), true);
 
-        // Checks if the attacker is already the `admin`
-        assertEq(timelock.admin() != attacker, true);
     }
 
     function setGlobalDelegation() internal {
@@ -51,7 +51,7 @@ contract SimulationTest is Helpers {
         comp.delegate(Genesis);
         
         // Delegate Binance votes to Binance
-        vm.prank(Binance);
+        vm.prank(Binance);s
         comp.delegate(Binance);
         
         // Voting power is not instant
@@ -59,22 +59,19 @@ contract SimulationTest is Helpers {
     }
 
     function checkInitialBalancesAndVotingPower() internal {
-        // Checks that the attacker does not have voting power
-        assertEq(comp.getCurrentVotes(attacker), 0);
-
         // Asserts that the previous holders have voting power
         assertEq(comp.getCurrentVotes(Fund) > proposalTH, true);
         assertEq(comp.getCurrentVotes(Genesis) > proposalTH, true);
         assertEq(comp.getCurrentVotes(Binance) > proposalTH, true);
 
         // Checks if the benefactor has funds to create a proposal
-        assertEq(comp.balanceOf(Benefactor) > proposalTH, true);
+        // assertEq(comp.balanceOf(Benefactor) > proposalTH, true);
     }
 
     function createProposal() internal returns (uint256) {
         // Targets
         address[] memory targets = new address[](1);
-        targets[0] = address(timelock);
+        targets[0] = address(comp);
 
         // Values
         uint256[] memory values = new uint256[](1);
@@ -82,11 +79,11 @@ contract SimulationTest is Helpers {
 
         // Signatures
         string[] memory signatures = new string[](1);
-        signatures[0] = "setPendingAdmin(address)";
+        signatures[0] = "transfer(address,uint256)";
 
         // Calldatas
         bytes[] memory calldatas = new bytes[](1);
-        calldatas[0] = abi.encode(attacker);
+        calldatas[0] = abi.encode(Multisig, );
 
         // Description
         string memory description = "Proposal to renable DSR";
