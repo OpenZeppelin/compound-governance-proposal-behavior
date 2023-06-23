@@ -107,8 +107,57 @@ contract SimulationTest is Helpers {
             description
         );
 
+        console.log("Calldatas for transfer COMP: ");
+        console.logBytes(calldatas[0]);
+
         return proposalID;
     }
+
+    function testCreatePaymentProposalData() public  {
+         // FIRST create payment proposal to Compound
+         // Targets
+        address[] memory targets = new address[](1);
+        targets[0] = address(comp);
+
+        // Values
+        uint256[] memory values = new uint256[](1);
+        values[0] = 0;
+
+        // Signatures
+        string[] memory signatures = new string[](1);
+        signatures[0] = "transfer(address,uint256)";
+
+        // Calldatas
+        bytes[] memory calldatas = new bytes[](1);
+        calldatas[0] = abi.encode(Multisig, paymentAmount);
+
+        // Description
+        string memory description = "# OpenZeppelin Security Partnership - 2023 Q3 Compensation ## Background Starting on Dec 21st, 2021 \n"
+      "OpenZeppelin was [selected](https://compound.finance/governance/proposals/76) to offer the Compound DAO security services including continuous audit"
+      "security advisory and monitoring. At the start of every quarter OpenZeppelin creates a proposal to perform the next service fee payment."
+      " ## Compensation Structure We receive our quarterly payments in a lump-sum of COMP. Based on the last week's average price"
+      "this would be $35.95 per COMP for a total quarterly payment of 29,455 COMP equaling $1M per the original agreement. This COMP will be transferred "
+      "from the Timelock's existing balance. More detail in this [forum post](https://www.comp.xyz/t/openzeppelin-security-updates-for-q1-2023-q2-compensation-proposal/4163)."
+      " By approving this proposal you agree that any services provided by OpenZeppelin shall be governed by the [Terms of Service available here](https://docs.google.com/document/d/1eDcvirf0bdzpjIkfxQHm7fcV05O1IcLXL-Dl-U52Y4k/edit?usp=sharing)";
+
+    // Now wrap in a multisig proposal:
+     // Calldatas for Compound proposal should include targets, values, calldatas, description
+
+         // Signatures
+        string[] memory multisigSignatures = new string[](1);
+        multisigSignatures[0] = "propose(address[],uint256[],string[],bytes[],string)";
+
+        bytes[] memory multisigCalldatas = new bytes[](1);
+        multisigCalldatas[0] = abi.encode(targets, values, signatures, calldatas, description);
+
+        console.log("\nMultisig proposal data:\n");
+        console.log("Targets: %s \nValues: 0\nSignatures: %s \nDescription: %s ", address(governorBravo), multisigSignatures[0], description);
+        console.log("\nCalldatas for Multisig proposal: \n");
+        console.logBytes(multisigCalldatas[0]);
+        assertEq(values[0], 0);
+
+    }
+
 
     function voteOnProposal(uint256 proposalID, uint8 fundVote, uint8 genesisVote, uint8 binanceVote, uint8 benefactorVote) internal {
         // We increment the time based on the voting delay
